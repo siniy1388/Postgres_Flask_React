@@ -1,0 +1,88 @@
+### Authorization by token, part 1. Retrieve and save token.
+POST http://localhost:5000/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Admin1",
+    "password": "12345678"
+}
+
+> {% client.global.set("access_token", response.body.access_token); client.global.set("auth_token", response.body.refresh_token); %}
+
+
+### Authorization by token, part 2. Use token to authorize.
+POST http://localhost:5000/auth/refresh HTTP/1.1
+Authorization: Bearer {{refresh_token}}
+
+> {% client.global.set("@access_token", response.body.access_token); %}
+
+
+###Тестовый регистрация направления на госпитализация
+POST http://localhost:5000/rir_send/web_appoint HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdnap": "cfb1b754-de27-4368-a4a6-f54b483d2f73"
+}
+
+
+###Тестовый проверка страховой пациента
+POST http://localhost:5000/rir_send/test_strah HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdpac": "2314ffcc-19cb-47b6-8eb4-1f745afceb4d"
+}
+
+
+###Информация по направлению на госп
+POST http://localhost:5000/rir_send/get_appoint_info HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdnap": "e56c7143-9db1-4031-a5f4-92809a0064b3"
+}
+
+### Информация по госпитализации
+POST http://localhost:5000/rir_send/get_hospital HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "ruid": "256010121400099"
+}
+
+### Аннулирруемм
+POST http://localhost:5000/rir_send/web_appoint_cancel HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdnap": "e56c7143-9db1-4031-a5f4-92809a0064b3",
+  "ruid": "2560101214000135",
+  "org": "3",
+  "code_pr": "3"
+
+}
+
+###Тестовый регистрация направления на госпитализация
+POST http://localhost:5000/rir_send/web_appoint_corr HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdnap": "e56c7143-9db1-4031-a5f4-92809a0064b3"
+}
+
+###Тестовый регистрация направления на госпитализация
+POST http://localhost:5000/rir_send/web_appoint_cap HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "cdnap": "cfb1b754-de27-4368-a4a6-f54b483d2f73"
+}
+###
